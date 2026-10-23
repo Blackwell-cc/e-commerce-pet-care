@@ -2379,3 +2379,25 @@ progress::-webkit-progress-value {
   }
 }
 .product-feedback:not(:empty){font-size:12px;margin-top:12px;font-weight:700;}
+/* Motion follows the natural scroll; all content remains accessible without JS. */
+body::before { content: ''; position: fixed; inset: 0 auto auto 0; width: var(--reading-progress, 0%); height: 3px; background: var(--lime); z-index: 100; pointer-events: none; }
+.hero-image { transform-origin: center 30%; will-change: transform; }
+.hero-stamp { will-change: transform; }
+.ribbon > div { will-change: transform; }
+.motion-reveal { animation: goodkind-arrive .75s both; animation-play-state: paused; animation-delay: var(--reveal-delay, 0ms); }
+.motion-reveal.is-visible { animation-play-state: running; }
+@keyframes goodkind-arrive { from { opacity: .3; translate: 0 26px; } to { opacity: 1; translate: 0 0; } }
+.ritual-grid article { position: relative; }
+.ritual-grid article::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: currentColor; transform: scaleX(.15); transform-origin: left; transition: transform .8s ease; }
+.ritual-grid article.is-visible::before { transform: scaleX(1); }
+.product-image img { transition: transform .65s cubic-bezier(.2,.7,.2,1); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+.product-image:hover img { transform: scale(1.045) rotate(-1deg); }
+.button:hover .button-arrow { transform: rotate(-35deg); }
+.button-arrow { transition: transform .3s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+.motion-reveal { animation: none; }
+.hero-image, .hero-stamp, .ribbon > div { will-change: auto; }
+.ritual-grid article::before { transform: none; transition: none; }
+}
