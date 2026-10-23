@@ -7,6 +7,7 @@ import {
   subtotal,
   shipping,
   changeQuantity,
+  FREE_SHIPPING_THRESHOLD,
 } from "./shop.js";
 
 const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
@@ -61,7 +62,7 @@ document.querySelector("#app").innerHTML = `
       <div class="section-heading"><div><p class="eyebrow">THE EVERYDAY, BUT BETTER</p><h2 id="shop-title">SMALL THINGS.<br><span>HAPPY TAILS.</span></h2></div><p>Meet their new favorite things.<br>Thoughtful care, from nose to tail.</p></div>
       <div class="shop-toolbar"><div class="filters" role="group" aria-label="Filter products">${["All goodies", "Treats", "Grooming", "Wellness", "Play"].map((name, i) => `<button data-filter="${name}" aria-pressed="${i === 0}">${name}${i === 0 ? "<span>4</span>" : ""}</button>`).join("")}</div><span id="product-count" aria-live="polite">4 good things</span></div>
       <div class="product-grid" id="products"></div>
-      <p class="shop-note">A considered collection for dogs. All prices in USD. <span>Good things start here.</span></p>
+      <p class="shop-note">A considered collection for dogs. All prices in Thai baht. <span>Good things start here.</span></p>
     </section>
     <section class="routine section-wrap" aria-labelledby="routine-title"><div class="routine-paw">${paw}</div><div><p class="eyebrow">EVERY DOG HAS THEIR DAY</p><h2 id="routine-title">WHAT’S THEIR<br> KIND OF GOOD?</h2><p>Snack enthusiast? Mud magnet? Professional player?<br>Find a little something for their favorite routine.</p></div><button class="button button-dark" data-action="quiz">Find their good thing ${arrow}</button></section>
     <section class="story section-wrap" id="story" aria-labelledby="story-title"><div class="story-photo"><img src="${asset("images/story.webp")}" alt="A golden retriever resting its chin on a loved one's knee in a sunny meadow" width="1000" height="1000" loading="lazy" /><span class="photo-note">Their whole world? You.</span></div><div class="story-content"><p class="eyebrow">A LITTLE CARE GOES A LONG WAY</p><h2 id="story-title">THEY MAKE<br>LIFE BETTER.<br><span>LET’S RETURN<br>THE FAVOR.</span></h2><p>They’re our early-morning motivation. Our sofa companions. Our very best welcome home.</p><p>Goodkind is built around one simple idea: the love we get from our pets deserves a little love in return. Through good things, thoughtful rituals, and more time together.</p><a class="text-link" href="#shop">A little good for your best friend ${icon("arrow")}</a><div class="story-signature">With love, goodkind ${icon("heart")}</div></div></section>
@@ -69,7 +70,7 @@ document.querySelector("#app").innerHTML = `
     <section class="faq section-wrap" id="faq" aria-labelledby="faq-title"><div><p class="eyebrow">GOOD QUESTIONS. STRAIGHT ANSWERS.</p><h2 id="faq-title">A LITTLE <br>GOOD TO <br><span>KNOW.</span></h2><p>Getting to know Goodkind?<br>Here’s a helpful head start.</p></div><div class="faq-list">
       <details><summary>What is Goodkind? <span>+</span></summary><p>Goodkind is a fictional pet care brand created as an interactive e-commerce portfolio project. You can explore the collection, try product filters, and build a shopping bag. No real purchases or deliveries take place.</p></details>
       <details><summary>Who is this collection for? <span>+</span></summary><p>This concept collection is designed around dogs and their everyday routines. Product descriptions and packaging are illustrative. Always check a real product’s species, age, ingredients, and safety guidance before use.</p></details>
-      <details><summary>How does shipping work? <span>+</span></summary><p>The demo uses a $5 flat shipping fee and free shipping for bags of $50 or more. This is an example shopping experience; no physical products are shipped.</p></details>
+      <details><summary>How does shipping work? <span>+</span></summary><p>The demo uses a ฿60 flat shipping fee and free shipping for bags of ฿1,500 or more. This is an example shopping experience; no physical products are shipped.</p></details>
       <details><summary>Can I place a real order? <span>+</span></summary><p>Not yet. The bag and checkout are interactive demonstrations. Checkout shows your order summary without asking for payment or personal information, and no order is sent to a store.</p></details>
       <details><summary>Will my shopping bag be saved? <span>+</span></summary><p>Yes, your bag is saved on this browser when local storage is available. Nothing is sent to a server. You can remove individual items or clear your bag at any time.</p></details>
     </div></section>
@@ -151,7 +152,7 @@ function renderCart() {
   const sum = subtotal(cart);
   cartDialog.innerHTML = `<div class="cart-header"><div><p class="eyebrow">GOOD THINGS INSIDE</p><h2 id="cart-title">YOUR BAG <span>(${cartCount(cart)})</span></h2></div><button class="icon-button" data-action="close-cart" aria-label="Close shopping bag">${icon("close")}</button></div>${
     cart.length
-      ? `<div class="shipping-note"><p>${sum >= 5000 ? "Good news! Your demo bag has free shipping." : `${money(5000 - sum)} away from free demo shipping.`}</p><progress max="5000" value="${Math.min(sum, 5000)}" aria-label="Progress toward free demo shipping"></progress></div><div class="cart-items">${cart
+      ? `<div class="shipping-note"><p>${sum >= FREE_SHIPPING_THRESHOLD ? "Good news! Your demo bag has free shipping." : `${money(FREE_SHIPPING_THRESHOLD - sum)} away from free demo shipping.`}</p><progress max="${FREE_SHIPPING_THRESHOLD}" value="${Math.min(sum, FREE_SHIPPING_THRESHOLD)}" aria-label="Progress toward free demo shipping"></progress></div><div class="cart-items">${cart
           .map((item) => {
             const p = products.find((p) => p.id === item.id);
             return `<article class="cart-item"><img src="${asset(`images/${p.image}`)}" alt="${p.name}" width="100" height="100" /><div><h3>${p.name}</h3><p>${p.detail}</p><div class="quantity"><button data-change="${p.id}" data-delta="-1" aria-label="Decrease ${p.name} quantity">${icon("minus")}</button><span aria-label="Quantity">${item.quantity}</span><button data-change="${p.id}" data-delta="1" aria-label="Increase ${p.name} quantity" ${item.quantity === 20 ? "disabled" : ""}>${icon("plus")}</button></div><button class="remove-button" data-remove="${p.id}">Remove</button></div><strong>${money(p.price * item.quantity)}</strong></article>`;
@@ -236,7 +237,7 @@ function quizModal() {
 const information = {
   shipping: [
     "Shipping & returns",
-    "This is a portfolio storefront, so no products are shipped and no return requests are processed. The bag demonstrates a $5 shipping fee, waived at $50. A live store would need fulfillment locations, delivery estimates, and an approved return policy before launch.",
+    "This is a portfolio storefront, so no products are shipped and no return requests are processed. The bag demonstrates a ฿60 shipping fee, waived at ฿1,500. A live store would need fulfillment locations, delivery estimates, and an approved return policy before launch.",
   ],
   privacy: [
     "A little privacy, please.",

@@ -7,6 +7,8 @@ import {
   shipping,
   cartCount,
   money,
+  FREE_SHIPPING_THRESHOLD,
+  SHIPPING_FEE,
 } from "../src/shop.js";
 
 test("saved cart rejects invalid, duplicate, unknown, and excessive entries", () => {
@@ -38,15 +40,18 @@ test("cart supports add, increment, decrement, remove without mutation", () => {
     20,
   );
 });
-test("currency totals use integer cents and shipping switches at $50", () => {
+test("currency totals use whole baht and shipping switches at ฿1,500", () => {
   const cart = [
     { id: "fur", quantity: 1 },
-    { id: "tummy", quantity: 1 },
+    { id: "play", quantity: 1 },
+    { id: "bites", quantity: 1 },
   ];
-  assert.equal(subtotal(cart), 5000);
+  assert.equal(subtotal(cart), 1930);
   assert.equal(shipping(cart), 0);
-  assert.equal(cartCount(cart), 2);
-  assert.equal(shipping([{ id: "bites", quantity: 1 }]), 500);
+  assert.equal(cartCount(cart), 3);
+  assert.equal(FREE_SHIPPING_THRESHOLD, 1500);
+  assert.equal(SHIPPING_FEE, 60);
+  assert.equal(shipping([{ id: "bites", quantity: 1 }]), 60);
   assert.equal(shipping([]), 0);
-  assert.equal(money(1900), "$19.00");
+  assert.equal(money(490), "฿490");
 });
