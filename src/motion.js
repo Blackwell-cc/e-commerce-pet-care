@@ -73,6 +73,10 @@ if (!reduced.matches && !location.hash) {
     const rect = alignImage();
     Object.assign(frame.style, { position: 'absolute', margin: '0', minWidth: '0', minHeight: '0',
       left: start.left + 'px', top: start.top + 'px', width: start.width + 'px', height: start.height + 'px', opacity: '1' });
+    preview.animate([
+      { width: start.width + 'px', height: start.height + 'px', left: '0px', top: '0px' },
+      { width: preview.style.width, height: preview.style.height, left: preview.style.left, top: preview.style.top }
+    ], { duration: 1250, easing: 'cubic-bezier(.65,0,.2,1)', fill: 'forwards' });
     const animation = frame.animate([
       { left: start.left + 'px', top: start.top + 'px', width: start.width + 'px', height: start.height + 'px', borderRadius: '18px' },
       { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px', borderRadius: getComputedStyle(hero).borderRadius }
