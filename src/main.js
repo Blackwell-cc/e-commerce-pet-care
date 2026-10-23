@@ -84,6 +84,11 @@ document.querySelector("#app").innerHTML = `
 const modal = document.querySelector("#modal");
 const cartDialog = document.querySelector("#cart-dialog");
 function toast(message) {
+  const dialogFeedback = modal.open && modal.querySelector('.product-feedback');
+  if (dialogFeedback) {
+    dialogFeedback.textContent = message;
+    return;
+  }
   const element = document.querySelector("#toast");
   element.textContent = message;
   element.classList.add("visible");
@@ -138,7 +143,7 @@ function productModal(id) {
   const p = products.find((p) => p.id === id);
   if (!p) return;
   openModal(
-    `<div class="product-detail"><img src="${asset(`images/${p.image}`)}" alt="${p.name} product packaging" width="627" height="627" /><div><p class="eyebrow">${p.category} / THE GOODKIND COLLECTION</p><h2 id="modal-title">${p.name}</h2><p>${p.detail}</p><p class="detail-price">${money(p.price)}</p><p>${p.description}</p><ul>${p.features.map((f) => `<li>${icon("check")}${f}</li>`).join("")}</ul><button class="button button-dark" data-add="${p.id}">Add to bag — ${money(p.price)} ${arrow}</button><button class="text-link view-bag" data-action="cart">View your bag ${icon("arrow")}</button><p class="concept-note">${p.note}</p></div></div>`,
+    `<div class="product-detail"><img src="${asset(`images/${p.image}`)}" alt="${p.name} product packaging" width="627" height="627" /><div><p class="eyebrow">${p.category} / THE GOODKIND COLLECTION</p><h2 id="modal-title">${p.name}</h2><p>${p.detail}</p><p class="detail-price">${money(p.price)}</p><p>${p.description}</p><ul>${p.features.map((f) => `<li>${icon("check")}${f}</li>`).join("")}</ul><button class="button button-dark" data-add="${p.id}">Add to bag — ${money(p.price)} ${arrow}</button><p class="product-feedback" role="status"></p><button class="text-link view-bag" data-action="cart">View your bag ${icon("arrow")}</button><p class="concept-note">${p.note}</p></div></div>`,
     "product-modal",
   );
 }
@@ -260,7 +265,7 @@ document.addEventListener("click", (event) => {
   if (button.dataset.category) {
     category = button.dataset.category;
     renderProducts();
-    document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+    document.querySelector("#shop").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
   if (button.dataset.product) productModal(button.dataset.product);
   if (button.dataset.add) addToCart(button.dataset.add);
@@ -306,7 +311,7 @@ document.addEventListener("click", (event) => {
     continue: () => {
       modal.close();
       cartDialog.close();
-      document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+      document.querySelector("#shop").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       document.querySelector("[data-filter]").focus({ preventScroll: true });
     },
     "reset-search": () => {

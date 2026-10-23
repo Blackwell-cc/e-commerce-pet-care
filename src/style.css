@@ -2378,3 +2378,4 @@ progress::-webkit-progress-value {
     min-height: 44px;
   }
 }
+.product-feedback:not(:empty){font-size:12px;margin-top:12px;font-weight:700;}
