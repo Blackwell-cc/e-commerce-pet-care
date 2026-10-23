@@ -1,5 +1,7 @@
 # GOODKIND
 
+[![Deploy GitHub Pages](https://github.com/Blackwell-cc/e-commerce-pet-care/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/Blackwell-cc/e-commerce-pet-care/actions/workflows/deploy-pages.yml)
+
 **Good care. Great company.** An English-language pet care storefront and independent portfolio concept.
 
 A bold, warm e-commerce landing page with a forest-green and citrus palette, oversized type, original AI-generated campaign photography, and a functional browser-local shopping experience. Art direction references [Voldog](https://www.voldogfood.com/); this project is not affiliated with that brand.
@@ -38,11 +40,17 @@ npm run preview
 - Keyboard-accessible native dialogs, visible focus, labels, and reduced-motion support.
 - Self-hosted fonts and optimized WebP images; no third-party runtime requests.
 
-## Deploy when ready
+## Live site
+
+https://blackwell-cc.github.io/e-commerce-pet-care/
+
+Every push to `main` runs the tests, creates the Vite production build, and deploys the `dist` directory through GitHub Actions. The repository's Pages source must stay set to **GitHub Actions**.
+
+## Deploy elsewhere
 
 Build command: `npm run build` · output directory: `dist`.
 
-Deploy `dist` to any static host, or import this repository into Vercel, Netlify, or Cloudflare Pages with the Vite preset. The relative Vite base also supports a GitHub Pages project subdirectory. For GitHub Pages, publish the **built `dist` output**, not the raw source files. GitHub Actions checks the code and uploads the built site as an artifact; it does not deploy automatically.
+Deploy `dist` to any static host, or import this repository into Vercel, Netlify, or Cloudflare Pages with the Vite preset. The relative Vite base also supports a project subdirectory.
 
 This repository is saved for future deployment. No production domain or payment provider is configured.
 
