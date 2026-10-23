@@ -2421,3 +2421,32 @@ body::before { content: ''; position: fixed; inset: 0 auto auto 0; width: var(--
 .cinematic-card.arrived { opacity: 1; transform: none; }
 @media(max-width: 540px) { .care-scene { margin: 20px 12px 45px; border-radius: 22px; height: 160vh; } .care-stage { padding: 24px; } .care-stage h2 { font-size: 9vw; } }
 @media(prefers-reduced-motion: reduce) { .brand-entrance { display: none; } .care-scene { height: auto; } .care-stage { position: relative; height: auto; min-height: 440px; } .care-stage h2 span { opacity: 1 !important; } .cinematic-card { opacity: 1; transform: none; transition: none; } .entrance-complete .hero-copy { animation: none; } }
+/* Reference-inspired opening: a small photographic window, masked wordmark,
+   then one continuous expansion into the storefront. */
+.intro-active { overflow: hidden; }
+.intro-loader { position: fixed; inset: 0; background: #faf9f5; z-index: 1000; display: grid; place-items: center; pointer-events: auto; }
+.intro-window { position: absolute; width: min(28vw, 390px); height: min(18vw, 250px); min-width: 220px; min-height: 150px; overflow: hidden; border-radius: 18px; opacity: 0; }
+.intro-window img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+.intro-word { position: relative; overflow: hidden; padding: 20px; color: var(--forest); }
+.intro-word > span { display: block; font-family: 'Anybody', sans-serif; font-weight: 700; font-size: clamp(48px, 10vw, 150px); letter-spacing: -.075em; opacity: 0; }
+.intro-paw { color: var(--lime); font-size: .5em; vertical-align: top; margin-left: .15em; }
+.intro-loader.playing .intro-window { animation: intro-photo 3.2s cubic-bezier(.65,0,.25,1) both; }
+.intro-loader.playing .intro-word > span { animation: intro-logo 2.2s .3s both; }
+.intro-loader.playing { animation: intro-clear .45s 2.9s both; }
+@keyframes intro-photo { 0% { opacity: 0; scale: .75; } 28%, 57% { opacity: 1; scale: 1; width: min(28vw, 390px); height: min(18vw, 250px); border-radius: 18px; } 100% { opacity: 1; width: 100%; height: 100%; border-radius: 0; } }
+@keyframes intro-logo { 0% { opacity: 0; transform: translateY(110%) skewY(12deg); } 38%, 65% { opacity: 1; transform: translateY(0) skewY(0); } 100% { opacity: 0; transform: scale(.85); } }
+@keyframes intro-clear { to { opacity: 0; visibility: hidden; } }
+@media(prefers-reduced-motion: reduce) { .intro-loader { display: none; } .intro-active { overflow: auto; } }
+/* Keep the reveal photograph pixel-aligned with the real hero at handoff. */
+.intro-loader.playing { animation: none; }
+.intro-loader.playing .intro-window { animation: intro-preview-in .85s ease both; }
+.intro-window { display: block; }
+.intro-active .hero-copy, .intro-active .hero-stamp, .intro-active .dog-caption, .intro-active .hero-scroll { visibility: hidden; }
+.entrance-complete .hero-copy { animation: none; }
+.entrance-complete .hero-copy > * { animation: hero-welcome .7s both; }
+.entrance-complete .hero-copy > :nth-child(2) { animation-delay: .1s; }
+.entrance-complete .hero-copy > :nth-child(3) { animation-delay: .2s; }
+.entrance-complete .hero-copy > :nth-child(4) { animation-delay: .3s; }
+.entrance-complete .hero-copy > :nth-child(5) { animation-delay: .4s; }
+@keyframes intro-preview-in { from { opacity: 0; } to { opacity: 1; } }
+@media(prefers-reduced-motion: reduce) { .entrance-complete .hero-copy > * { animation: none; } }

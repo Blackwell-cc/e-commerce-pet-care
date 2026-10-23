@@ -37,14 +37,59 @@ reduced.addEventListener('change', schedule);
 schedule();
 // A short branded entrance, followed by scroll-paced storytelling.
 const loader = document.createElement('div');
-loader.className = 'brand-entrance';
+loader.className = 'intro-loader';
 loader.setAttribute('aria-hidden', 'true');
-loader.innerHTML = '<span>goodkind ✦</span><small>A LITTLE LOVE. COMING YOUR WAY.</small><i></i>';
+loader.innerHTML = '<div class="intro-window"><img src="' + image.src + '" alt="" /></div><div class="intro-word"><span>goodkind<span class="intro-paw">✦</span></span></div>';
 if (!reduced.matches && !location.hash) {
   document.body.append(loader);
-  const finish = () => { loader.classList.add('depart'); document.body.classList.add('entrance-complete'); setTimeout(() => loader.remove(), 1000); };
-  const ready = image.decode ? image.decode().catch(() => {}) : Promise.resolve();
-  Promise.race([ready, new Promise(resolve => setTimeout(resolve, 1800))]).then(() => setTimeout(finish, 450));
+  document.documentElement.classList.add('intro-active');
+  const app = document.querySelector('#app'); app.inert = true;
+  let finished = false;
+  const finish = () => {
+    if (finished) return; finished = true;
+    document.documentElement.classList.remove('intro-active');
+    document.body.classList.add('entrance-complete');
+    app.inert = false; loader.remove();
+  };
+  const ready = Promise.all([document.fonts.ready, image.decode().catch(() => {})]);
+  const frame = loader.querySelector('.intro-window');
+  const preview = frame.querySelector('img');
+  let expanding = false;
+  const alignImage = () => {
+    const rect = hero.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+    const style = getComputedStyle(image);
+    Object.assign(preview.style, {
+      position: 'absolute', width: imageRect.width + 'px', height: imageRect.height + 'px',
+      left: (imageRect.left - rect.left) + 'px', top: (imageRect.top - rect.top) + 'px',
+      objectPosition: style.objectPosition, objectFit: style.objectFit, maxWidth: 'none'
+    });
+    return rect;
+  };
+  const expand = async () => {
+    if (finished) return;
+    expanding = true;
+    const start = frame.getBoundingClientRect();
+    const rect = alignImage();
+    Object.assign(frame.style, { position: 'absolute', margin: '0', minWidth: '0', minHeight: '0',
+      left: start.left + 'px', top: start.top + 'px', width: start.width + 'px', height: start.height + 'px', opacity: '1' });
+    const animation = frame.animate([
+      { left: start.left + 'px', top: start.top + 'px', width: start.width + 'px', height: start.height + 'px', borderRadius: '18px' },
+      { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px', borderRadius: getComputedStyle(hero).borderRadius }
+    ], { duration: 1250, easing: 'cubic-bezier(.65,0,.2,1)', fill: 'forwards' });
+    await animation.finished.catch(() => {});
+    if (finished) return;
+    finish();
+  };
+  Promise.race([ready, new Promise(resolve => setTimeout(resolve, 1800))]).then(() => {
+    if (finished) return;
+    loader.classList.add('playing');
+    setTimeout(expand, 1700);
+  });
+  addEventListener('resize', () => { if (expanding) finish(); }, { passive: true });
+  setTimeout(finish, 6500);
+  addEventListener('pageshow', event => { if (event.persisted) finish(); });
+  reduced.addEventListener('change', event => { if (event.matches) finish(); });
 }
 const scene = document.createElement('section');
 scene.className = 'care-scene';
